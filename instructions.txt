@@ -1,0 +1,25 @@
+1. Unzip The folder
+2. Open the code in Code Editor
+3. Make sure the Path is correct
+4. `npm install`
+5. Get your API key from solanatracker.io
+6. Search for "RPC" and Put Rpc url inside '', also search for "API KEY" and Put The API Key only there (Not the link, Only API key)
+7. Generate an Endpoint from QuickNode in Solana Mainnet and Search for "QuickNode" and Replace the Quick Node RPC url in 3 places in the entire code.
+
+You are done !!
+
+7. Now run `npm start` to see if the App is working fine or not.
+
+=========================>>>>
+
+ Make sure you have solana supported wallet such as Phantom or Solflare has Installed. If you see everything is correct, Now run "npm run build" to
+ generate the files to Upload on Hosting. Make sure your hosting supports Node. Buy a VPS. For testing you can Upload on Netlify.com to Check if 
+ everything is fine.
+
+
+ If you need help about customizing, Adding new features or Deploying on VPS in your domain, 
+ 
+  ---->  Contact me On:
+                1. E-mail: programmer.ihrahat@gmail.com 
+                or
+                2. Telegram: @ihrahat0
