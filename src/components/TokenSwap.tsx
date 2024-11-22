@@ -17,7 +17,6 @@ import {
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "./logo.gif";
 import { predefinedTokens } from "./predefinedTokens";
 import { socialLinks, partnerLogos, partnerLogosBottom } from "./partners";
 import { Settings, ChevronDown, ArrowDown, CheckCircle, AlertCircle, Loader2, Info } from 'lucide-react'
@@ -30,6 +29,8 @@ import lineaLogo from './assets/linea.png';
 import solanaLogo from './assets/solana.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import poweredByLogo from './assets/poweredby.png';
+import avalancheLogo from './assets/avalanche-avax-logo.svg';
+import celoLogo from './assets/celo-celo-logo.png';
 
 interface Token {
   symbol: string;
@@ -112,9 +113,16 @@ type ChainOptions = {
   arbitrum: ChainOption;
   base: ChainOption;
   linea: ChainOption;
+  avalanche: ChainOption;
+  celo: ChainOption;
 };
 
 type ChainType = keyof ChainOptions;
+
+// Add a type for chain URLs
+type ChainUrls = {
+  [key in ChainType]: string;
+};
 
 export default function Component() {
   const { publicKey, sendTransaction } = useWallet();
@@ -150,13 +158,38 @@ export default function Component() {
     arbitrum: { name: 'Arbitrum', logo: arbitrumLogo },
     base: { name: 'Base', logo: baseLogo },
     linea: { name: 'Linea', logo: lineaLogo },
+    avalanche: { name: 'Avalanche', logo: avalancheLogo },
+    celo: { name: 'Celo', logo: celoLogo }
   };
 
-  // Update the handleChainSwitch function with proper typing
+  // Define the URLs for each chain
+  const chainUrls: ChainUrls = {
+    solana: '', // empty string means stay on current page
+    ethereum: 'dogeswap.co/evm/?chain=mainnet#/swap',
+    bsc: 'dogeswap.co/evm/?chain=bnb#/swap',
+    polygon: 'dogeswap.co/evm/?chain=polygon#/swap',
+    arbitrum: 'dogeswap.co/evm/?chain=arbitrum#/swap',
+    base: 'dogeswap.co/evm/?chain=base#/swap',
+    linea: 'dogeswap.co/evm/?chain=linea#/swap',
+    avalanche: 'dogeswap.co/evm/?chain=avalanche#/swap',
+    celo: 'dogeswap.co/evm/?chain=celo#/swap'
+  };
+
+  // Update the handleChainSwitch function
   const handleChainSwitch = (chain: ChainType) => {
-    setSelectedChain(chain);
-    setIsChainMenuOpen(false);
-    toast.success(`Switched to ${chainOptions[chain].name} Network`);
+    const targetUrl = chainUrls[chain];
+    
+    if (chain === 'solana') {
+      // Stay on current page for Solana
+      setSelectedChain(chain);
+      setIsChainMenuOpen(false);
+      toast.success(`Switched to ${chainOptions[chain].name} Network`);
+    } else {
+      // Redirect to appropriate URL for other chains
+      const protocol = window.location.protocol;
+      const fullUrl = `${protocol}//${targetUrl}`;
+      window.location.href = fullUrl;
+    }
   };
 
   const fetchTokenData = useCallback(async (tokensToFetch: Token[]) => {
@@ -660,6 +693,8 @@ export default function Component() {
                   { key: 'polygon', name: 'Polygon', logo: polygonLogo },
                   { key: 'arbitrum', name: 'Arbitrum', logo: arbitrumLogo },
                   { key: 'linea', name: 'Linea', logo: lineaLogo },
+                  { key: 'avalanche', name: 'Avalanche', logo: avalancheLogo },
+                  { key: 'celo', name: 'Celo', logo: celoLogo },
                   { key: 'solana', name: 'Solana', logo: solanaLogo },
                 ].map((chain) => (
                   <motion.button
@@ -921,6 +956,8 @@ export default function Component() {
               { src: polygonLogo, alt: 'Polygon' },
               { src: arbitrumLogo, alt: 'Arbitrum' },
               { src: lineaLogo, alt: 'Linea' },
+              { src: avalancheLogo, alt: 'Avalanche' },
+              { src: celoLogo, alt: 'Celo' },
               { src: solanaLogo, alt: 'Solana' },
             ].map((chain, index) => (
               <div 
