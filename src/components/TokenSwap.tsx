@@ -29,8 +29,8 @@ import lineaLogo from './assets/linea.png';
 import solanaLogo from './assets/solana.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import poweredByLogo from './assets/poweredby.png';
-import avalancheLogo from './assets/avalanche-avax-logo.svg';
-import celoLogo from './assets/celo-celo-logo.png';
+// import avalancheLogo from './assets/avalanche-avax-logo.svg';
+// import celoLogo from './assets/celo-celo-logo.png';
 
 interface Token {
   symbol: string;
@@ -113,8 +113,8 @@ type ChainOptions = {
   arbitrum: ChainOption;
   base: ChainOption;
   linea: ChainOption;
-  avalanche: ChainOption;
-  celo: ChainOption;
+  // avalanche: ChainOption;
+  // celo: ChainOption;
 };
 
 type ChainType = keyof ChainOptions;
@@ -158,21 +158,21 @@ export default function Component() {
     arbitrum: { name: 'Arbitrum', logo: arbitrumLogo },
     base: { name: 'Base', logo: baseLogo },
     linea: { name: 'Linea', logo: lineaLogo },
-    avalanche: { name: 'Avalanche', logo: avalancheLogo },
-    celo: { name: 'Celo', logo: celoLogo }
+    // avalanche: { name: 'Avalanche', logo: avalancheLogo },
+    // celo: { name: 'Celo', logo: celoLogo }
   };
 
   // Define the URLs for each chain
   const chainUrls: ChainUrls = {
     solana: '', // empty string means stay on current page
-    ethereum: 'dogeswap.co/evm/?chain=mainnet#/swap',
-    bsc: 'dogeswap.co/evm/?chain=bnb#/swap',
-    polygon: 'dogeswap.co/evm/?chain=polygon#/swap',
-    arbitrum: 'dogeswap.co/evm/?chain=arbitrum#/swap',
-    base: 'dogeswap.co/evm/?chain=base#/swap',
-    linea: 'dogeswap.co/evm/?chain=linea#/swap',
-    avalanche: 'dogeswap.co/evm/?chain=avalanche#/swap',
-    celo: 'dogeswap.co/evm/?chain=celo#/swap'
+    ethereum: 'dogeswap.co',
+    bsc: 'dogeswap.co',
+    polygon: 'dogeswap.co',
+    arbitrum: 'dogeswap.co',
+    base: 'dogeswap.co',
+    linea: 'dogeswap.co',
+    // avalanche: 'dogeswap.co',
+    // celo: 'dogeswap.co'
   };
 
   // Update the handleChainSwitch function
@@ -693,8 +693,8 @@ export default function Component() {
                   { key: 'polygon', name: 'Polygon', logo: polygonLogo },
                   { key: 'arbitrum', name: 'Arbitrum', logo: arbitrumLogo },
                   { key: 'linea', name: 'Linea', logo: lineaLogo },
-                  { key: 'avalanche', name: 'Avalanche', logo: avalancheLogo },
-                  { key: 'celo', name: 'Celo', logo: celoLogo },
+                  // { key: 'avalanche', name: 'Avalanche', logo: avalancheLogo },
+                  // { key: 'celo', name: 'Celo', logo: celoLogo },
                   { key: 'solana', name: 'Solana', logo: solanaLogo },
                 ].map((chain) => (
                   <motion.button
@@ -956,8 +956,8 @@ export default function Component() {
               { src: polygonLogo, alt: 'Polygon' },
               { src: arbitrumLogo, alt: 'Arbitrum' },
               { src: lineaLogo, alt: 'Linea' },
-              { src: avalancheLogo, alt: 'Avalanche' },
-              { src: celoLogo, alt: 'Celo' },
+              // { src: avalancheLogo, alt: 'Avalanche' },
+              // { src: celoLogo, alt: 'Celo' },
               { src: solanaLogo, alt: 'Solana' },
             ].map((chain, index) => (
               <div 

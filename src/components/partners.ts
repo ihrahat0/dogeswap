@@ -5,7 +5,7 @@ import { Instagram, Youtube } from 'lucide-react';
 export const socialLinks = [
   { label: 'Website', url: '#', icon: FaGlobe },
   { label: 'X', url: 'https://x.com/DogeSwap_', icon: FaXTwitter },
-  { label: 'Telegram', url: 'https://t.me/', icon: FaTelegram },
+  { label: 'Telegram', url: 'https://t.me/dogeswap_', icon: FaTelegram },
   { label: 'Instagram', url: 'https://www.instagram.com/dogeswap_', icon: Instagram },
   { label: 'Tiktok', url: 'https://www.tiktok.com/@dogeswap_', icon: FaTiktok }
 ];
