@@ -168,12 +168,12 @@ export default function Component() {
   const chainUrls: ChainUrls = {
     solana: '', // empty string means stay on current page
     ethereum: 'dogeswap.co/evm/?chain=bsc',
-    bsc: 'dogeswap.co/?chain=eth',
-    polygon: 'dogeswap.co/?chain=polygonZkEVM',
-    arbitrum: 'dogeswap.co/?chain=arb',
-    base: 'dogeswap.co/?chain=base',
-    linea: 'dogeswap.co?chain=linea',
-    opbnb: 'dogeswap.co?chain=opBNB'
+    bsc: 'dogeswap.co/evm/?chain=eth',
+    polygon: 'dogeswap.co/evm/?chain=polygonZkEVM',
+    arbitrum: 'dogeswap.co/evm/?chain=arb',
+    base: 'dogeswap.co/evm/?chain=base',
+    linea: 'dogeswap.co/evm/?chain=linea',
+    opbnb: 'dogeswap.co/evm/?chain=opBNB'
     // avalanche: 'dogeswap.co',
     // celo: 'dogeswap.co'
   };
