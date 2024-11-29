@@ -167,13 +167,13 @@ export default function Component() {
   // Define the URLs for each chain
   const chainUrls: ChainUrls = {
     solana: '', // empty string means stay on current page
-    ethereum: 'dogeswap.co/evm/?chain=bsc',
-    bsc: 'dogeswap.co/evm/?chain=eth',
-    polygon: 'dogeswap.co/evm/?chain=polygonZkEVM',
-    arbitrum: 'dogeswap.co/evm/?chain=arb',
-    base: 'dogeswap.co/evm/?chain=base',
-    linea: 'dogeswap.co/evm/?chain=linea',
-    opbnb: 'dogeswap.co/evm/?chain=opBNB'
+    ethereum: 'dogeswap.co/?chain=bsc',
+    bsc: 'dogeswap.co/?chain=eth',
+    polygon: 'dogeswap.co/?chain=polygonZkEVM',
+    arbitrum: 'dogeswap.co/?chain=arb',
+    base: 'dogeswap.co/?chain=base',
+    linea: 'dogeswap.co/?chain=linea',
+    opbnb: 'dogeswap.co/?chain=opBNB'
     // avalanche: 'dogeswap.co',
     // celo: 'dogeswap.co'
   };
@@ -418,7 +418,7 @@ export default function Component() {
       );
       const solanaTracker = new SolanaTracker(
         solana,
-        "f74df995-dea5-4427-bcd1-f8be8c1c1d6f" //ENTER Quicknode Solana Mainnet API HERE
+        "ea16df74-238e-4588-9631-a8745d97a7c8" //ENTER Quicknode Solana Mainnet API HERE
       );
 
       // Get swap instructions
