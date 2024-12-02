@@ -477,26 +477,26 @@ export default function Component() {
     const updatedTokens = await updateTokens([token]);
     const updatedToken = updatedTokens[0];
 
+    // Update URL parameters
+    const params = new URLSearchParams(window.location.search);
     if (isFromToken) {
       setFromToken(updatedToken);
+      params.set('from', updatedToken.address);
       if (amount && toToken) {
-        const newToAmount = (
-          (parseFloat(amount) * updatedToken.price) /
-          toToken.price
-        ).toFixed(6);
+        const newToAmount = ((parseFloat(amount) * updatedToken.price) / toToken.price).toFixed(6);
         setToAmount(newToAmount);
       }
     } else {
       setToToken(updatedToken);
+      params.set('to', updatedToken.address);
       if (amount && fromToken) {
-        const newToAmount = (
-          (parseFloat(amount) * fromToken.price) /
-          updatedToken.price
-        ).toFixed(6);
+        const newToAmount = ((parseFloat(amount) * fromToken.price) / updatedToken.price).toFixed(6);
         setToAmount(newToAmount);
       }
     }
 
+    // Update URL without refreshing the page
+    window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
     setShowTokenSelector(null);
   };
 
@@ -615,15 +615,14 @@ export default function Component() {
     setToAmount(amount);
 
     if (newFromToken && newToToken) {
+      const params = new URLSearchParams(window.location.search);
+      params.set('from', newFromToken.address);
+      params.set('to', newToToken.address);
+      window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
+
       const updatedTokens = await updateTokens([newFromToken, newToToken]);
-      setFromToken(
-        updatedTokens.find((t) => t.address === newFromToken.address) ||
-          newFromToken
-      );
-      setToToken(
-        updatedTokens.find((t) => t.address === newToToken.address) ||
-          newToToken
-      );
+      setFromToken(updatedTokens.find((t) => t.address === newFromToken.address) || newFromToken);
+      setToToken(updatedTokens.find((t) => t.address === newToToken.address) || newToToken);
     }
   };
 
@@ -647,6 +646,47 @@ export default function Component() {
       3000
     );
   };
+
+  useEffect(() => {
+    // Parse URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const fromParam = params.get('from');
+    const toParam = params.get('to');
+
+    // Helper function to find token by address or symbol
+    const findToken = (param: string | null) => {
+      if (!param) return null;
+      return tokens.find(t => 
+        t.address.toLowerCase() === param.toLowerCase() || 
+        t.symbol.toLowerCase() === param.toLowerCase()
+      );
+    };
+
+    // Set tokens based on URL parameters or defaults
+    if (fromParam || toParam) {
+      // URL parameters exist - use them
+      const fromTokenMatch = findToken(fromParam);
+      const toTokenMatch = findToken(toParam);
+
+      if (fromTokenMatch) {
+        setFromToken(fromTokenMatch);
+      }
+      if (toTokenMatch) {
+        setToToken(toTokenMatch);
+      }
+    } else {
+      // No URL parameters - set default tokens
+      const defaultFromToken = tokens.find(t => t.symbol === "SOL");
+      const defaultToToken = tokens.find(t => t.symbol === "DOGE");
+      
+      if (defaultFromToken && !fromToken) {
+        setFromToken(defaultFromToken);
+      }
+      if (defaultToToken && !toToken) {
+        setToToken(defaultToToken);
+      }
+    }
+  }, [tokens]); // Only run when tokens are loaded
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
