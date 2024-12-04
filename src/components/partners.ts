@@ -1,11 +1,18 @@
-import { FaGlobe, FaTelegram } from 'react-icons/fa';
-import { FaTiktok, FaXTwitter } from "react-icons/fa6";
+import { FaGlobe, FaTelegram, FaTwitter } from 'react-icons/fa';
+import { FaTiktok } from "react-icons/fa6";
 import { Instagram, Youtube } from 'lucide-react';
 
 export const socialLinks = [
   { label: 'Website', url: '#', icon: FaGlobe },
-  { label: 'X', url: 'https://x.com/DogeSwap_', icon: FaXTwitter },
-  { label: 'Telegram', url: 'https://t.me/dogeswap_', icon: FaTelegram },
+  { label: 'X', url: 'https://x.com/DogeSwap_', icon: FaTwitter },
+  { 
+    label: 'Telegram', 
+    urls: {
+      announcement: 'https://t.me/DogeSwap_Ann',
+      chat: 'https://t.me/DogeSwap_Chat'
+    }, 
+    icon: FaTelegram 
+  },
   { label: 'Instagram', url: 'https://www.instagram.com/dogeswap_', icon: Instagram },
   { label: 'Tiktok', url: 'https://www.tiktok.com/@dogeswap_', icon: FaTiktok }
 ];

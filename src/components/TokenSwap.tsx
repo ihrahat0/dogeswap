@@ -14,6 +14,11 @@ import {
   FaSun,
   FaMoon,
   FaBars,
+  FaGlobe,
+  FaTwitter,
+  FaTelegram,
+  FaInstagram,
+  FaTiktok,
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -151,6 +156,7 @@ export default function Component() {
   const [isChainMenuOpen, setIsChainMenuOpen] = useState(false);
   const [fromUsdValue, setFromUsdValue] = useState<string>('');
   const [toUsdValue, setToUsdValue] = useState<string>('');
+  const [showTelegramPopup, setShowTelegramPopup] = useState(false);
 
   // Define chainOptions with proper typing
   const chainOptions: ChainOptions = {
@@ -708,6 +714,42 @@ export default function Component() {
     }
   }, [amount, toAmount, fromToken, toToken]);
 
+  const TelegramPopup = () => (
+    <div 
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50"
+      onClick={() => setShowTelegramPopup(false)}
+    >
+      <div 
+        className="bg-[#1E1E1E] rounded-xl p-6 w-[300px] transform transition-all"
+        onClick={e => e.stopPropagation()}
+      >
+        <h3 className="text-xl font-bold text-white mb-4 text-center">
+          Join Our Telegram
+        </h3>
+        <div className="space-y-3">
+          <a
+            href="https://t.me/DogeSwap_Ann"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center space-x-2 bg-[#ff4400] hover:bg-[#ff4400]/80 text-white p-3 rounded-lg w-full transition-colors"
+          >
+            <FaTelegram className="w-5 h-5" />
+            <span>Announcement Channel</span>
+          </a>
+          <a
+            href="https://t.me/DogeSwap_Chat"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center space-x-2 bg-[#ff4400] hover:bg-[#ff4400]/80 text-white p-3 rounded-lg w-full transition-colors"
+          >
+            <FaTelegram className="w-5 h-5" />
+            <span>Community Chat</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
       {/* Video background */}
@@ -991,10 +1033,16 @@ export default function Component() {
             {socialLinks.map((link) => (
               <a
                 key={link.label}
-                href={link.url}
+                onClick={(e) => {
+                  if (link.label === 'Telegram') {
+                    e.preventDefault();
+                    setShowTelegramPopup(true);
+                  }
+                }}
+                href={link.url || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white hover:text-[#ff4400] transition-colors"
+                className="text-white hover:text-[#ff4400] transition-colors cursor-pointer"
                 aria-label={link.label}
               >
                 <link.icon className="w-5 h-5" />
@@ -1180,6 +1228,8 @@ export default function Component() {
           </div>
         </div>
       )}
+
+      {showTelegramPopup && <TelegramPopup />}
 
       <ToastContainer
         position="bottom-right"
