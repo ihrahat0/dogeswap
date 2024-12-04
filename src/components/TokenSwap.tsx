@@ -149,6 +149,8 @@ export default function Component() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [selectedChain, setSelectedChain] = useState<ChainType>('solana');
   const [isChainMenuOpen, setIsChainMenuOpen] = useState(false);
+  const [fromUsdValue, setFromUsdValue] = useState<string>('');
+  const [toUsdValue, setToUsdValue] = useState<string>('');
 
   // Define chainOptions with proper typing
   const chainOptions: ChainOptions = {
@@ -688,6 +690,24 @@ export default function Component() {
     }
   }, [tokens]); // Only run when tokens are loaded
 
+  useEffect(() => {
+    // Update From USD Value
+    if (fromToken && amount) {
+      const fromUsd = fromToken.price * parseFloat(amount || '0');
+      setFromUsdValue(fromUsd ? `$${fromUsd.toFixed(2)}` : '');
+    } else {
+      setFromUsdValue('');
+    }
+
+    // Update To USD Value
+    if (toToken && toAmount) {
+      const toUsd = toToken.price * parseFloat(toAmount || '0');
+      setToUsdValue(toUsd ? `$${toUsd.toFixed(2)}` : '');
+    } else {
+      setToUsdValue('');
+    }
+  }, [amount, toAmount, fromToken, toToken]);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
       {/* Video background */}
@@ -823,13 +843,20 @@ export default function Component() {
           {/* First token input */}
           <div className="bg-white/5 rounded-xl p-4 mb-2">
             <div className="flex justify-between items-center">
-              <input
-                type="number"
-                className="w-full bg-transparent text-white text-3xl font-bold outline-none"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
+              <div className="flex flex-col w-full">
+                <input
+                  type="number"
+                  className="w-full bg-transparent text-white text-3xl font-bold outline-none"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+                {fromUsdValue && (
+                  <span className="text-sm text-gray-400 mt-1 text-left">
+                    ≈ {fromUsdValue}
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => setShowTokenSelector("from")}
                 className="token-selector-button"
@@ -881,19 +908,26 @@ export default function Component() {
           {/* Second token input */}
           <div className="bg-white/5 rounded-xl p-4 mt-2 mb-6">
             <div className="flex justify-between items-center">
-              <input
-                type="number"
-                className="w-full bg-transparent text-white text-3xl font-bold outline-none"
-                placeholder="0.00"
-                value={toAmount}
-                onChange={(e) => {
-                  setToAmount(e.target.value);
-                  if (fromToken && toToken) {
-                    const newFromAmount = ((parseFloat(e.target.value) * toToken.price) / fromToken.price).toFixed(6);
-                    setAmount(newFromAmount);
-                  }
-                }}
-              />
+              <div className="flex flex-col w-full">
+                <input
+                  type="number"
+                  className="w-full bg-transparent text-white text-3xl font-bold outline-none"
+                  placeholder="0.00"
+                  value={toAmount}
+                  onChange={(e) => {
+                    setToAmount(e.target.value);
+                    if (fromToken && toToken) {
+                      const newFromAmount = ((parseFloat(e.target.value) * toToken.price) / fromToken.price).toFixed(6);
+                      setAmount(newFromAmount);
+                    }
+                  }}
+                />
+                {toUsdValue && (
+                  <span className="text-sm text-gray-400 mt-1 text-left">
+                    ≈ {toUsdValue}
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => setShowTokenSelector("to")}
                 className="token-selector-button"
