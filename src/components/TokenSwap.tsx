@@ -6,19 +6,19 @@ import { getAssociatedTokenAddress } from "@solana/spl-token";
 import { SolanaTracker } from "../SolanaTracker";
 import "../App.css";
 import {
-  FaExchangeAlt,
-  FaCog,
-  FaChevronDown,
+  // FaExchangeAlt,
+  // FaCog,
+  // FaChevronDown,
   FaSearch,
   FaTimes,
-  FaSun,
-  FaMoon,
-  FaBars,
-  FaGlobe,
-  FaTwitter,
+  // FaSun,
+  // FaMoon,
+  // FaBars,
+  // FaGlobe,
+  // FaTwitter,
   FaTelegram,
-  FaInstagram,
-  FaTiktok,
+  // FaInstagram,
+  // FaTiktok,
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -395,7 +395,9 @@ export default function Component() {
     const token = isFromToken ? fromToken : toToken;
     if (token && token.balance !== undefined) {
       if (isFromToken) {
-        const calculatedAmount = (token.balance * percentage).toFixed(9);
+        // If it's MAX (percentage === 1) and it's SOL token, deduct 0.002
+        const deduction = (percentage === 1 && token.symbol === "SOL") ? 0.002 : 0;
+        const calculatedAmount = (token.balance * percentage - deduction).toFixed(9);
         setAmount(calculatedAmount);
         if (toToken) {
           const toValue = (parseFloat(calculatedAmount) * token.price) / toToken.price;
@@ -587,7 +589,7 @@ export default function Component() {
   }> = ({ token, onClick }) => (
     <button
       onClick={onClick}
-      className="flex items-center space-x-2 bg-black border border-[#ff4400] text-white px-4 py-2 rounded-xl hover:bg-white/10"
+      className="token-selector-button flex items-center space-x-2 bg-[#1a1a1a] border border-[#ff4400]/20 text-white px-4 py-2 rounded-xl hover:bg-[#ff4400]/10 transition-all duration-200"
     >
       {token ? (
         <>
@@ -1103,8 +1105,23 @@ export default function Component() {
       </div>
 
       {showTokenSelector && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="token-selector-modal">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50"
+        >
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="token-selector-gradient absolute inset-0" />
+          </div>
+
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="token-selector-modal bg-[#1a1a1a]/90 border border-[#ff4400]/20 relative z-10"
+          >
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-white">
                 Select a token
@@ -1135,12 +1152,17 @@ export default function Component() {
                 </div>
               ) : (
                 filteredTokens.map((token) => (
-                  <button
+                  <motion.button
                     key={token.address}
-                    className="token-list-item"
+                    className="token-list-item relative w-full flex justify-between items-center p-4 rounded-xl transition-all duration-200 overflow-hidden"
                     onClick={() => handleTokenSelection(token, showTokenSelector === "from")}
+                    whileHover={{ scale: 1.02 }}
                   >
-                    <div className="flex items-center space-x-3">
+                    {/* Animated background */}
+                    <div className="token-list-background absolute inset-0" />
+                    
+                    {/* Content */}
+                    <div className="relative z-10 flex items-center space-x-3">
                       {token.logo ? (
                         <img src={token.logo} alt={token.symbol} className="w-10 h-10 rounded-full" />
                       ) : (
@@ -1153,7 +1175,7 @@ export default function Component() {
                         <span className="text-sm text-gray-400">{token.name}</span>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className="relative z-10 flex flex-col items-end">
                       <span className="text-white font-medium">
                         ${token.price > 0 ? formatPrice(token.price) : '0.00'}
                       </span>
@@ -1171,12 +1193,12 @@ export default function Component() {
                         )}
                       </div>
                     </div>
-                  </button>
+                  </motion.button>
                 ))
               )}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
 
       {showSettingsModal && (
