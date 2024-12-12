@@ -657,46 +657,111 @@ export default function Component() {
     );
   };
 
-  useEffect(() => {
-    // Parse URL parameters
-    const params = new URLSearchParams(window.location.search);
-    const fromParam = params.get('from');
-    const toParam = params.get('to');
-
-    // Helper function to find token by address or symbol
-    const findToken = (param: string | null) => {
-      if (!param) return null;
-      return tokens.find(t => 
-        t.address.toLowerCase() === param.toLowerCase() || 
-        t.symbol.toLowerCase() === param.toLowerCase()
+  // Add this new function to fetch token data for an address
+  const fetchTokenDataFromAddress = async (address: string): Promise<Token | null> => {
+    try {
+      const response = await fetch(
+        `https://api.dexscreener.com/latest/dex/tokens/${address}`
       );
+      const data = await response.json();
+
+      if (data.pairs && data.pairs.length > 0) {
+        const pairData = data.pairs[0];
+        const newToken: Token = {
+          symbol: pairData.baseToken.symbol,
+          address: pairData.baseToken.address,
+          logo: pairData.info?.imageUrl,
+          name: pairData.baseToken.name,
+          price: parseFloat(pairData.priceUsd),
+          priceChange24h: parseFloat(pairData.priceChange.h24),
+        };
+
+        // Update the tokens list with the new token
+        setTokens(prevTokens => {
+          if (!prevTokens.some(t => t.address.toLowerCase() === address.toLowerCase())) {
+            return [newToken, ...prevTokens];
+          }
+          return prevTokens;
+        });
+
+        return newToken;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching token data:", error);
+      return null;
+    }
+  };
+
+  // Remove the second URL parameter handling useEffect and modify the first one
+  useEffect(() => {
+    const initializeFromUrl = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const fromParam = params.get('from');
+      const toParam = params.get('to');
+
+      // Helper function to find or fetch token
+      const findOrFetchToken = async (param: string | null) => {
+        if (!param) return null;
+        
+        // First check in existing tokens
+        const existingToken = tokens.find(t => 
+          t.address.toLowerCase() === param.toLowerCase() || 
+          t.symbol.toLowerCase() === param.toLowerCase()
+        );
+
+        if (existingToken) {
+          return existingToken;
+        }
+
+        // If not found and param looks like an address (length check is basic validation)
+        if (param.length === 44) {
+          const fetchedToken = await fetchTokenDataFromAddress(param);
+          if (fetchedToken) {
+            // Update tokens list with the new token
+            setTokens(prevTokens => {
+              if (!prevTokens.some(t => t.address.toLowerCase() === param.toLowerCase())) {
+                return [fetchedToken, ...prevTokens];
+              }
+              return prevTokens;
+            });
+            return fetchedToken;
+          }
+        }
+
+        return null;
+      };
+
+      // Process both tokens in parallel
+      const [fromTokenResult, toTokenResult] = await Promise.all([
+        fromParam ? findOrFetchToken(fromParam) : null,
+        toParam ? findOrFetchToken(toParam) : null
+      ]);
+
+      // Set the tokens only if they were found or fetched
+      if (fromParam && fromTokenResult) {
+        setFromToken(fromTokenResult);
+      } else if (!fromToken && !fromParam) {
+        // Only set default if no URL parameter and no token selected
+        const defaultFromToken = tokens.find(t => t.symbol === "SOL");
+        if (defaultFromToken) {
+          setFromToken(defaultFromToken);
+        }
+      }
+
+      if (toParam && toTokenResult) {
+        setToToken(toTokenResult);
+      } else if (!toToken && !toParam) {
+        // Only set default if no URL parameter and no token selected
+        const defaultToToken = tokens.find(t => t.symbol === "DOGE");
+        if (defaultToToken) {
+          setToToken(defaultToToken);
+        }
+      }
     };
 
-    // Set tokens based on URL parameters or defaults
-    if (fromParam || toParam) {
-      // URL parameters exist - use them
-      const fromTokenMatch = findToken(fromParam);
-      const toTokenMatch = findToken(toParam);
-
-      if (fromTokenMatch) {
-        setFromToken(fromTokenMatch);
-      }
-      if (toTokenMatch) {
-        setToToken(toTokenMatch);
-      }
-    } else {
-      // No URL parameters - set default tokens
-      const defaultFromToken = tokens.find(t => t.symbol === "SOL");
-      const defaultToToken = tokens.find(t => t.symbol === "DOGE");
-      
-      if (defaultFromToken && !fromToken) {
-        setFromToken(defaultFromToken);
-      }
-      if (defaultToToken && !toToken) {
-        setToToken(defaultToToken);
-      }
-    }
-  }, [tokens]); // Only run when tokens are loaded
+    initializeFromUrl();
+  }, [tokens]); // Dependencies array includes tokens
 
   useEffect(() => {
     // Update From USD Value
