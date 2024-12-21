@@ -227,11 +227,16 @@ export default function Component() {
               const priceUsd = bestPair.priceUsd ? parseFloat(bestPair.priceUsd.replace(/[,$]/g, '')) : 0;
               const priceChange24h = bestPair.priceChange?.h24 ? parseFloat(bestPair.priceChange.h24) : 0;
 
+              // Only use DexScreener's logo for tokens that don't have a predefined logo
+              const logo = predefinedTokens.find(t => t.address === token.address)?.logo || 
+                          token.logo || 
+                          bestPair.info?.imageUrl;
+
               return {
                 ...token,
                 price: priceUsd,
                 priceChange24h: priceChange24h,
-                logo: bestPair.info?.imageUrl || token.logo,
+                logo: logo,
               };
             }
             
