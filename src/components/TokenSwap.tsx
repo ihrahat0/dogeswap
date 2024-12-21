@@ -290,6 +290,24 @@ export default function Component() {
           );
 
           try {
+            // First check if the token account exists
+            const accountInfo = await solana.getAccountInfo(associatedTokenAddress);
+            
+            // If account doesn't exist, try to get token accounts by owner and filter
+            if (!accountInfo) {
+              const tokenAccounts = await solana.getParsedTokenAccountsByOwner(walletPublicKey, {
+                mint: tokenMintAddress
+              });
+              
+              // If we found any token accounts for this mint
+              if (tokenAccounts.value.length > 0) {
+                // Use the first account's balance
+                const amount = tokenAccounts.value[0].account.data.parsed.info.tokenAmount;
+                return parseFloat(amount.uiAmount?.toString() || "0");
+              }
+              return 0;
+            }
+
             const tokenAmount = await solana.getTokenAccountBalance(
               associatedTokenAddress
             );
@@ -299,6 +317,19 @@ export default function Component() {
               `Error fetching token balance for ${token.symbol}:`,
               tokenError
             );
+            // Try alternative method to get token accounts
+            try {
+              const tokenAccounts = await solana.getParsedTokenAccountsByOwner(walletPublicKey, {
+                mint: tokenMintAddress
+              });
+              
+              if (tokenAccounts.value.length > 0) {
+                const amount = tokenAccounts.value[0].account.data.parsed.info.tokenAmount;
+                return parseFloat(amount.uiAmount?.toString() || "0");
+              }
+            } catch (err) {
+              console.error("Error in alternative balance fetch:", err);
+            }
             return 0;
           }
         }
@@ -711,22 +742,31 @@ export default function Component() {
         );
 
         if (existingToken) {
+          // Fetch balance for existing token if wallet is connected
+          if (publicKey) {
+            const balance = await fetchTokenBalance(existingToken, publicKey);
+            return { ...existingToken, balance };
+          }
           return existingToken;
         }
 
         // If not found and param looks like an address (length check is basic validation)
         if (param.length === 44) {
           const fetchedToken = await fetchTokenDataFromAddress(param);
-          if (fetchedToken) {
+          if (fetchedToken && publicKey) {
+            // Fetch balance for new token if wallet is connected
+            const balance = await fetchTokenBalance(fetchedToken, publicKey);
+            const tokenWithBalance = { ...fetchedToken, balance };
             // Update tokens list with the new token
             setTokens(prevTokens => {
               if (!prevTokens.some(t => t.address.toLowerCase() === param.toLowerCase())) {
-                return [fetchedToken, ...prevTokens];
+                return [tokenWithBalance, ...prevTokens];
               }
               return prevTokens;
             });
-            return fetchedToken;
+            return tokenWithBalance;
           }
+          return fetchedToken;
         }
 
         return null;
@@ -744,8 +784,11 @@ export default function Component() {
       } else if (!fromToken && !fromParam) {
         // Only set default if no URL parameter and no token selected
         const defaultFromToken = tokens.find(t => t.symbol === "SOL");
-        if (defaultFromToken) {
-          setFromToken(defaultFromToken);
+        if (defaultFromToken && publicKey) {
+          const balance = await fetchTokenBalance(defaultFromToken, publicKey);
+          setFromToken({ ...defaultFromToken, balance });
+        } else {
+          setFromToken(defaultFromToken || null);
         }
       }
 
@@ -754,14 +797,17 @@ export default function Component() {
       } else if (!toToken && !toParam) {
         // Only set default if no URL parameter and no token selected
         const defaultToToken = tokens.find(t => t.symbol === "DOGE");
-        if (defaultToToken) {
-          setToToken(defaultToToken);
+        if (defaultToToken && publicKey) {
+          const balance = await fetchTokenBalance(defaultToToken, publicKey);
+          setToToken({ ...defaultToToken, balance });
+        } else {
+          setToToken(defaultToToken || null);
         }
       }
     };
 
     initializeFromUrl();
-  }, [tokens]); // Dependencies array includes tokens
+  }, [tokens, publicKey]); // Dependencies array includes tokens and publicKey
 
   useEffect(() => {
     // Update From USD Value
