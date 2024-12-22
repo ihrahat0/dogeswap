@@ -114,11 +114,11 @@ type ChainOptions = {
   solana: ChainOption;
   ethereum: ChainOption;
   bsc: ChainOption;
-  polygon: ChainOption;
-  arbitrum: ChainOption;
+  // polygon: ChainOption;
+  // arbitrum: ChainOption;
   base: ChainOption;
-  linea: ChainOption;
-  opbnb: ChainOption;
+  // linea: ChainOption;
+  // opbnb: ChainOption;
   // avalanche: ChainOption;
   // celo: ChainOption;
 };
@@ -163,11 +163,11 @@ export default function Component() {
     solana: { name: 'Solana', logo: solanaLogo },
     ethereum: { name: 'Ethereum', logo: ethereumLogo },
     bsc: { name: 'BSC', logo: bscLogo },
-    polygon: { name: 'Polygon', logo: polygonLogo },
-    arbitrum: { name: 'Arbitrum', logo: arbitrumLogo },
+    // polygon: { name: 'Polygon', logo: polygonLogo },
+    // arbitrum: { name: 'Arbitrum', logo: arbitrumLogo },
     base: { name: 'Base', logo: baseLogo },
-    linea: { name: 'Linea', logo: lineaLogo },
-    opbnb: { name: 'Linea', logo: bscLogo },
+    // linea: { name: 'Linea', logo: lineaLogo },
+    // opbnb: { name: 'Linea', logo: bscLogo },
     // avalanche: { name: 'Avalanche', logo: avalancheLogo },
     // celo: { name: 'Celo', logo: celoLogo }
   };
@@ -175,13 +175,13 @@ export default function Component() {
   // Define the URLs for each chain
   const chainUrls: ChainUrls = {
     solana: '', // empty string means stay on current page
-    ethereum: 'dogeswap.co/?chain=bsc',
-    bsc: 'dogeswap.co/?chain=eth',
-    polygon: 'dogeswap.co/?chain=polygonZkEVM',
-    arbitrum: 'dogeswap.co/?chain=arb',
-    base: 'dogeswap.co/?chain=base',
-    linea: 'dogeswap.co/?chain=linea',
-    opbnb: 'dogeswap.co/?chain=opBNB'
+    ethereum: 'dogeswap.co',
+    bsc: 'dogeswap.co',
+    // polygon: 'dogeswap.co/?chain=polygonZkEVM',
+    // arbitrum: 'dogeswap.co/?chain=arb',
+    base: 'dogeswap.co',
+    // linea: 'dogeswap.co/?chain=linea',
+    // opbnb: 'dogeswap.co/?chain=opBNB'
     // avalanche: 'dogeswap.co',
     // celo: 'dogeswap.co'
   };
@@ -913,10 +913,10 @@ export default function Component() {
                   { key: 'ethereum', name: 'Ethereum', logo: ethereumLogo },
                   { key: 'bsc', name: 'BSC', logo: bscLogo },
                   { key: 'base', name: 'Base', logo: baseLogo },
-                  { key: 'polygon', name: 'Polygon', logo: polygonLogo },
-                  { key: 'arbitrum', name: 'Arbitrum', logo: arbitrumLogo },
-                  { key: 'linea', name: 'Linea', logo: lineaLogo },
-                  { key: 'opbnb', name: 'opBNB', logo: bscLogo },
+                  // { key: 'polygon', name: 'Polygon', logo: polygonLogo },
+                  // { key: 'arbitrum', name: 'Arbitrum', logo: arbitrumLogo },
+                  // { key: 'linea', name: 'Linea', logo: lineaLogo },
+                  // { key: 'opbnb', name: 'opBNB', logo: bscLogo },
                   // { key: 'avalanche', name: 'Avalanche', logo: avalancheLogo },
                   // { key: 'celo', name: 'Celo', logo: celoLogo },
                   { key: 'solana', name: 'Solana', logo: solanaLogo },
